@@ -28,9 +28,21 @@ export const metadata: Metadata = {
   },
 };
 
+const aboutPageLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About Heritage Jute Fibers",
+  description: ogDescription,
+  url: "https://heritagejute.com/about",
+};
+
 export default function AboutPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageLd) }}
+      />
       <About3
         title="About Heritage Jute Fibers"
         description="A registered private export company established in 2014, based in Dhaka, Bangladesh. Over 10 years of experience supplying government-certified, high-quality jute products to importers in 31 countries."

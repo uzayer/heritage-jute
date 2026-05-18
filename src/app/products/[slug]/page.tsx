@@ -63,16 +63,30 @@ export default async function ProductDetailPage({
     ],
   };
 
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDescription,
+    image: `${siteUrl}${product.image.src}`,
+    brand: { "@type": "Brand", name: "Heritage Jute Fibers" },
+    category: product.category,
+  };
+
   return (
     <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+      />
       <div className="border-muted-foreground/20">
         <div className="container max-w-5xl border-x border-muted-foreground/20 py-12">
           <div className="grid gap-8 md:grid-cols-2 md:items-center">
-            <Reveal direction="none">
+            <Reveal direction="none" eager>
               <div className="mb-2 text-sm text-muted-foreground">
                 <a href="/products" className="hover:underline">
                   Products
@@ -104,6 +118,7 @@ export default async function ProductDetailPage({
               className="relative aspect-4/3 overflow-hidden rounded-xl border border-border bg-muted"
               direction="none"
               delay={0.05}
+              eager
             >
               <Image
                 src={product.image.src}

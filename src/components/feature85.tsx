@@ -79,12 +79,12 @@ const Feature85 = ({ className }: Feature85Props) => {
           <div className="relative container overflow-hidden border-x border-muted-foreground/20 py-32">
             <div className="isolate mx-auto flex max-w-3xl flex-col gap-20">
               <div className="bg absolute -top-1 -left-[1px] -z-10 h-full w-full bg-[linear-gradient(to_right,hsl(var(--muted-foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--muted-foreground))_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_100%_120%_at_50%_50%,transparent_20%,#000_100%)] bg-[size:64px_64px] opacity-20 [clip-path:inset(0px_0px_50%_0px)]"></div>
-              <Reveal direction="none">
+              <Reveal direction="none" eager>
                 <h2 className="text-center text-3xl md:text-5xl">
                   Our Jute Product Range
                 </h2>
               </Reveal>
-              <Reveal direction="none" delay={0.05}>
+              <Reveal direction="none" delay={0.05} eager>
                 <Image
                   src="/images/gallery/Raw-Jute.webp"
                   alt="Raw jute fibre in graded bales — starting point for yarn, fabrics, bags, and rope"
@@ -94,7 +94,7 @@ const Feature85 = ({ className }: Feature85Props) => {
                   className="max-h-64 w-full rounded-xl border border-border/60 bg-muted object-cover shadow-sm grayscale"
                 />
               </Reveal>
-              <Reveal delay={0.1}>
+              <Reveal delay={0.1} eager>
                 <p className="text-center text-xl md:text-3xl">
                   From raw fibre to finished bags — 11 product lines serving
                   importers across 31 countries.

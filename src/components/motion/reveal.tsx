@@ -57,6 +57,11 @@ export interface RevealProps {
    * Extra delay before the stagger sequence starts (seconds).
    */
   staggerDelay?: number;
+  /**
+   * When true, skip all animation and render children immediately.
+   * Use for above-the-fold content to avoid hiding LCP elements.
+   */
+  eager?: boolean;
 }
 
 type UseInViewOptions = NonNullable<Parameters<typeof useInView>[1]>;
@@ -90,6 +95,7 @@ export function Reveal({
   margin = "-80px 0px",
   stagger,
   staggerDelay = 0,
+  eager = false,
 }: RevealProps) {
   const rootRef = React.useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -102,7 +108,7 @@ export function Reveal({
   const useStagger =
     typeof stagger === "number" && stagger > 0 && !shouldReduceMotion;
 
-  if (shouldReduceMotion) {
+  if (eager || shouldReduceMotion) {
     return <div className={className}>{children}</div>;
   }
 

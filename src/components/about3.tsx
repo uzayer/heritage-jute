@@ -129,6 +129,8 @@ const About3 = ({
             <img
               src={mainImage.src}
               alt={mainImage.alt}
+              width={1200}
+              height={800}
               className="size-full max-h-[620px] rounded-xl object-cover"
             />
           </Reveal>
@@ -140,6 +142,8 @@ const About3 = ({
               <img
                 src={breakout.src}
                 alt={breakout.alt}
+                width={300}
+                height={48}
                 className="mr-auto h-12 dark:invert"
               />
               <div>
@@ -164,6 +168,8 @@ const About3 = ({
               <img
                 src={secondaryImage.src}
                 alt={secondaryImage.alt}
+                width={600}
+                height={400}
                 className="grow basis-0 rounded-xl object-cover"
               />
             </Reveal>
