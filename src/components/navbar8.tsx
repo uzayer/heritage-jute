@@ -1,5 +1,6 @@
 "use client";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
@@ -265,15 +266,19 @@ const DesktopMenuItem = ({ item, index, pathname }: DesktopMenuItemProps) => {
           <div className="grid min-h-[18.75rem] w-[45.25rem] grid-cols-[22.5rem_1fr] gap-4 p-3">
             <div className="relative aspect-square w-full overflow-hidden rounded-xl">
               {item.links.map((link, index) => (
-                <img
+                <Image
                   key={index}
                   ref={(el) => {
                     if (el) {
-                      imagesRef.current[index] = el;
+                      imagesRef.current[index] = el as unknown as HTMLImageElement;
                     }
                   }}
-                  src={link.image}
+                  src={link.image!}
                   alt={link.label}
+                  width={360}
+                  height={360}
+                  sizes="360px"
+                  loading="lazy"
                   className={`absolute top-0 left-0 h-full w-full object-cover transition-opacity duration-300 ${index === 0 ? "opacity-100" : "opacity-0"}`}
                 />
               ))}

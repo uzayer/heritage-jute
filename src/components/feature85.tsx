@@ -91,6 +91,7 @@ const Feature85 = ({ className }: Feature85Props) => {
                   width={630}
                   height={450}
                   sizes="(max-width: 768px) 100vw, 768px"
+                  priority
                   className="max-h-64 w-full rounded-xl border border-border/60 bg-muted object-cover shadow-sm grayscale"
                 />
               </Reveal>

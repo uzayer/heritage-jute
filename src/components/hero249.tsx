@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { MotionCta } from "@/components/motion/cta-motion";
 import { motion, useReducedMotion } from "motion/react";
+import { useState, useEffect } from "react";
 
 const Globe = dynamic(
   () => import("@/components/ui/globe").then((m) => ({ default: m.Globe })),
@@ -39,6 +40,17 @@ const EXPORT_COUNTRIES = [
 const ease = [0.21, 0.47, 0.32, 0.98] as const;
 
 const Hero249 = ({ className }: Hero249Props) => {
+  const [isXl, setIsXl] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1280px)").matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1280px)");
+    const handler = (e: MediaQueryListEvent) => setIsXl(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const reduced = useReducedMotion();
   const yOff = reduced ? 0 : 12;
   const dur = reduced ? 0.05 : 0.42;
@@ -119,13 +131,15 @@ const Hero249 = ({ className }: Hero249Props) => {
               </motion.div>
             </div>
           </motion.div>
-          <Reveal
-            className="relative hidden xl:flex min-h-[320px] items-center justify-center"
-            direction="none"
-            delay={0.05}
-          >
-            <Globe className="static max-w-full" />
-          </Reveal>
+          {isXl && (
+            <Reveal
+              className="relative hidden xl:flex min-h-[320px] items-center justify-center"
+              direction="none"
+              delay={0.05}
+            >
+              <Globe className="static max-w-full" />
+            </Reveal>
+          )}
         </div>
       </div>
       <div className="border-b">
