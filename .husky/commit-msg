@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+# Strip co-authored-by trailers added by AI assistants
+sed -i '' '/^[Cc]o-[Aa]uthored-[Bb]y:.*$/d' "$1"
+# Remove trailing blank lines left by the strip
+perl -i -0pe 's/\n+$/\n/' "$1"
+
+# Enforce conventional commits
+npx --no -- commitlint --edit "$1"
