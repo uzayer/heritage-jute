@@ -8,7 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { siteUrl, defaultOgImage } from "@/lib/site";
 import { MotionProvider } from "@/components/motion/motion-provider";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 const siteTitle = "Heritage Jute Fibers — Bangladesh Jute Exporter";
 const siteDescription =
