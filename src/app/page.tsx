@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hero249 } from "@/components/hero249";
+import { Hero78 } from "@/components/hero78";
 import { Feature85 } from "@/components/feature85";
 import { StatsSection } from "@/components/stats-2";
 import ContentSection from "@/components/content-4";
@@ -29,7 +29,14 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
-      <Hero249 />
+      <Hero78
+        heading="Bangladesh's Trusted Jute Exporter"
+        subtext="Heritage Jute Fibers supplies raw jute, yarn, hessian cloth, sacking bags, and jute rope to importers in 31 countries — government-certified and ready to ship."
+        primaryLabel="Browse Products"
+        primaryHref="/products"
+        secondaryLabel="WhatsApp"
+        secondaryHref="https://wa.me/8801841111625"
+      />
       <Feature85 />
       <StatsSection />
       <ContentSection />
