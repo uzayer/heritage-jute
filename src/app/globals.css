@@ -134,3 +134,28 @@
     @apply font-sans;
   }
 }
+
+/* Scroll reveal — state driven by data-reveal attribute, animations on compositor thread */
+[data-reveal] {
+  transition:
+    opacity 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    transform 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-reveal="hidden"] {
+  opacity: 0;
+  transform: var(--reveal-offset, translateY(16px));
+}
+[data-reveal="visible"] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal="hidden"] {
+    opacity: 1;
+    transform: none;
+  }
+  [data-reveal] {
+    transition: none;
+  }
+}

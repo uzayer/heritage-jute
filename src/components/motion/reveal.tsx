@@ -1,61 +1,37 @@
 "use client";
 
 import * as React from "react";
-import { Children, isValidElement } from "react";
-import {
-  motion,
-  useInView,
-  useReducedMotion,
-  type Variants,
-} from "motion/react";
 
 type RevealDirection = "up" | "down" | "left" | "right" | "none";
 
 export interface RevealProps {
   children: React.ReactNode;
   className?: string;
-  /**
-   * Animation direction. `none` will only fade.
-   */
+  /** Animation direction. `none` will only fade. */
   direction?: RevealDirection;
-  /**
-   * Distance in pixels for directional offset.
-   */
+  /** Distance in pixels for directional offset. */
   distance?: number;
-  /**
-   * Delay in seconds.
-   */
+  /** Delay in seconds. */
   delay?: number;
-  /**
-   * Duration in seconds.
-   */
+  /** @deprecated No-op — duration is fixed at 0.5s via CSS. */
   duration?: number;
-  /**
-   * Only animate once when entering viewport.
-   */
+  /** Only animate once when entering viewport. */
   once?: boolean;
-  /**
-   * When true, allow the animation to replay when the section re-enters the
-   * viewport (sets `viewport.once` to false).
-   */
+  /** @deprecated No-op — replay is not supported in the CSS implementation. */
   replay?: boolean;
   /**
    * How much of the element should be visible before triggering.
    * Use a number (0..1) or `"some"` / `"all"`.
    */
   amount?: number | "some" | "all";
-  /**
-   * Root margin for viewport trigger, e.g. `"-80px 0px"`.
-   */
+  /** Root margin for viewport trigger, e.g. `"-80px 0px"`. */
   margin?: string;
   /**
-   * When set (> 0), each direct child is wrapped with staggered motion using
-   * `staggerChildren` (seconds between children).
+   * When set (> 0), each direct child is wrapped with staggered animation
+   * (seconds between children).
    */
   stagger?: number;
-  /**
-   * Extra delay before the stagger sequence starts (seconds).
-   */
+  /** Extra delay before the stagger sequence starts (seconds). */
   staggerDelay?: number;
   /**
    * When true, skip all animation and render children immediately.
@@ -64,21 +40,14 @@ export interface RevealProps {
   eager?: boolean;
 }
 
-type UseInViewOptions = NonNullable<Parameters<typeof useInView>[1]>;
-
-function getOffset(direction: RevealDirection, distance: number) {
+function getOffset(direction: RevealDirection, distance: number): string {
   switch (direction) {
-    case "up":
-      return { x: 0, y: distance };
-    case "down":
-      return { x: 0, y: -distance };
-    case "left":
-      return { x: distance, y: 0 };
-    case "right":
-      return { x: -distance, y: 0 };
+    case "up":    return `translateY(${distance}px)`;
+    case "down":  return `translateY(-${distance}px)`;
+    case "left":  return `translateX(${distance}px)`;
+    case "right": return `translateX(-${distance}px)`;
     case "none":
-    default:
-      return { x: 0, y: 0 };
+    default:      return "none";
   }
 }
 
@@ -88,9 +57,7 @@ export function Reveal({
   direction = "up",
   distance = 16,
   delay = 0,
-  duration = 0.5,
   once = true,
-  replay = false,
   amount = "some",
   margin = "-80px 0px",
   stagger,
@@ -98,81 +65,76 @@ export function Reveal({
   eager = false,
 }: RevealProps) {
   const rootRef = React.useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const viewportOnce = replay ? false : once;
-  const isInView = useInView(rootRef, {
-    once: viewportOnce,
-    amount,
-    margin: margin as UseInViewOptions["margin"],
-  });
-  const useStagger =
-    typeof stagger === "number" && stagger > 0 && !shouldReduceMotion;
 
-  if (eager || shouldReduceMotion) {
+  React.useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const threshold =
+      typeof amount === "number" ? amount : amount === "all" ? 1 : 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.dataset.reveal = "visible";
+          // :scope > ensures only direct child wrappers are updated,
+          // not any nested Reveal components deeper in the tree.
+          el.querySelectorAll<HTMLElement>(":scope > [data-reveal]").forEach(
+            (child) => { child.dataset.reveal = "visible"; }
+          );
+          if (once) observer.disconnect();
+        }
+      },
+      { rootMargin: margin, threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [once, amount, margin]);
+
+  if (eager) {
     return <div className={className}>{children}</div>;
   }
 
   const offset = getOffset(direction, distance);
-  const ease = [0.21, 0.47, 0.32, 0.98] as const;
 
-  if (useStagger) {
-    const containerVariants: Variants = {
-      hidden: {},
-      show: {
-        transition: {
-          staggerChildren: stagger,
-          delayChildren: staggerDelay + delay,
-        },
-      },
-    };
-
-    const itemVariants: Variants = {
-      hidden: { opacity: 0, ...offset },
-      show: {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        transition: { duration, ease },
-      },
-    };
-
+  if (stagger && stagger > 0) {
     return (
-      <motion.div
-        ref={rootRef}
-        className={className}
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? "show" : "hidden"}
-      >
-        {Children.map(children, (child, index) => {
-          const key = isValidElement(child) && child.key != null
-            ? String(child.key)
-            : `reveal-stagger-${index}`;
+      <div ref={rootRef} className={className}>
+        {React.Children.map(children, (child, i) => {
+          const key =
+            React.isValidElement(child) && child.key != null
+              ? String(child.key)
+              : `reveal-stagger-${i}`;
           return (
-            <motion.div key={key} variants={itemVariants}>
+            <div
+              key={key}
+              data-reveal="hidden"
+              style={
+                {
+                  "--reveal-delay": `${staggerDelay + delay + i * stagger}s`,
+                  "--reveal-offset": offset,
+                } as React.CSSProperties
+              }
+            >
               {child}
-            </motion.div>
+            </div>
           );
         })}
-      </motion.div>
+      </div>
     );
   }
 
-  const variants: Variants = {
-    hidden: { opacity: 0, ...offset },
-    show: { opacity: 1, x: 0, y: 0 },
-  };
-
   return (
-    <motion.div
+    <div
       ref={rootRef}
+      data-reveal="hidden"
       className={className}
-      variants={variants}
-      initial="hidden"
-      animate={isInView ? "show" : "hidden"}
-      transition={{ duration, delay, ease }}
+      style={
+        {
+          "--reveal-delay": `${delay}s`,
+          "--reveal-offset": offset,
+        } as React.CSSProperties
+      }
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
