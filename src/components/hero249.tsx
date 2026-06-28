@@ -40,12 +40,11 @@ const EXPORT_COUNTRIES = [
 const ease = [0.21, 0.47, 0.32, 0.98] as const;
 
 const Hero249 = ({ className }: Hero249Props) => {
-  const [isXl, setIsXl] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1280px)").matches
-  );
+  const [isXl, setIsXl] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1280px)");
+    setIsXl(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsXl(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -64,6 +63,11 @@ const Hero249 = ({ className }: Hero249Props) => {
         delayChildren: reduced ? 0 : 0.04,
       },
     },
+  };
+
+  const h1Item = {
+    hidden: { y: yOff },
+    show: { y: 0, transition: { duration: dur, ease } },
   };
 
   const sequenceItem = {
@@ -87,7 +91,7 @@ const Hero249 = ({ className }: Hero249Props) => {
           >
             <motion.h1
               className="text-4xl font-medium tracking-tight text-balance text-foreground md:text-5xl lg:text-6xl"
-              variants={sequenceItem}
+              variants={h1Item}
             >
               Bangladesh&apos;s Trusted Jute Exporter{" "}
               <span className="text-muted-foreground">

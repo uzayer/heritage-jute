@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/motion/reveal";
@@ -127,10 +128,13 @@ const Compliance7 = ({
                       key={certification.src}
                       className="flex items-center justify-center"
                     >
-                      <img
+                      <Image
                         src={certification.src}
                         alt={certification.alt}
+                        width={176}
+                        height={176}
                         className="size-36 object-contain sm:size-44"
+                        unoptimized
                       />
                     </div>
                   );

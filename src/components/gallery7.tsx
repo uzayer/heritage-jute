@@ -1,6 +1,7 @@
 "use client";
 
 import AutoScroll from "embla-carousel-auto-scroll";
+import Image from "next/image";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
 
@@ -116,16 +117,18 @@ const Gallery7 = ({ className }: Gallery7Props) => {
             <CarouselContent className="-ml-3">
               {IMAGES.map(({ src, alt }, index) => (
                 <CarouselItem key={src} className="basis-auto pl-3">
-                  <div className="max-h-72 max-w-52 sm:max-h-80 sm:max-w-60">
-                    <img
+                  <div
+                    className={cn(
+                      "relative h-72 w-52 sm:h-80 sm:w-60",
+                      index % 2 === 0 ? "mt-10" : "mt-4",
+                    )}
+                  >
+                    <Image
                       src={src}
                       alt={alt}
-                      className={cn(
-                        "h-full w-full rounded-md object-cover",
-                        index % 2 === 0 ? "mt-10" : "mt-4",
-                      )}
-                      loading={index < 4 ? "eager" : "lazy"}
-                      decoding="async"
+                      fill
+                      className="rounded-md object-cover"
+                      sizes="(max-width: 639px) 208px, 240px"
                     />
                   </div>
                 </CarouselItem>

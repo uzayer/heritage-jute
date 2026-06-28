@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Marquee,
   MarqueeContent,
@@ -125,13 +126,14 @@ const About3 = ({
           </p>
         </Reveal>
         <div className="grid gap-7 lg:grid-cols-3">
-          <Reveal className="lg:col-span-2" direction="none" delay={0.05}>
-            <img
+          <Reveal className="relative lg:col-span-2 aspect-[3/2] max-h-[620px] overflow-hidden rounded-xl" direction="none" delay={0.05} eager>
+            <Image
               src={mainImage.src}
               alt={mainImage.alt}
-              width={1200}
-              height={800}
-              className="size-full max-h-[620px] rounded-xl object-cover"
+              fill
+              className="object-cover"
+              priority
+              sizes="(min-width: 1024px) 66vw, 100vw"
             />
           </Reveal>
           <div className="flex flex-col gap-7 md:flex-row lg:flex-col">
@@ -139,13 +141,16 @@ const About3 = ({
               className="flex flex-col justify-between gap-6 rounded-xl bg-muted p-7 md:w-1/2 lg:w-auto"
               delay={0.1}
             >
-              <img
-                src={breakout.src}
-                alt={breakout.alt}
-                width={300}
-                height={48}
-                className="mr-auto h-12 dark:invert"
-              />
+              {breakout.src && (
+                <Image
+                  src={breakout.src}
+                  alt={breakout.alt ?? ""}
+                  width={300}
+                  height={48}
+                  className="mr-auto h-12 dark:invert"
+                  style={{ width: "auto" }}
+                />
+              )}
               <div>
                 <p className="mb-2 text-lg font-semibold">{breakout.title}</p>
                 <p className="text-muted-foreground">{breakout.description}</p>
@@ -164,13 +169,13 @@ const About3 = ({
                 </a>
               </Button>
             </Reveal>
-            <Reveal className="md:w-1/2 lg:min-h-0 lg:w-auto" direction="none" delay={0.15}>
-              <img
+            <Reveal className="relative md:w-1/2 lg:min-h-0 lg:w-auto aspect-[3/2] overflow-hidden rounded-xl" direction="none" delay={0.15}>
+              <Image
                 src={secondaryImage.src}
                 alt={secondaryImage.alt}
-                width={600}
-                height={400}
-                className="grow basis-0 rounded-xl object-cover"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
               />
             </Reveal>
           </div>
@@ -184,10 +189,13 @@ const About3 = ({
                     key={company.src + idx}
                     className="mx-8 flex items-center"
                   >
-                    <img
+                    <Image
                       src={company.src}
                       alt={company.alt}
+                      width={120}
+                      height={32}
                       className="h-7 w-auto md:h-8 dark:invert"
+                      style={{ width: "auto" }}
                     />
                   </MarqueeItem>
                 ))}
