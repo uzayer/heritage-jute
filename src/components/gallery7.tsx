@@ -4,6 +4,7 @@ import AutoScroll from "embla-carousel-auto-scroll";
 import Image from "next/image";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
+import { useState } from "react";
 
 import {
   Carousel,
@@ -70,6 +71,12 @@ interface Gallery7Props {
 }
 
 const Gallery7 = ({ className }: Gallery7Props) => {
+  const [plugins] = useState(() =>
+    typeof window !== "undefined" && window.innerWidth >= 768
+      ? [AutoScroll({ speed: 0.9 })]
+      : [],
+  );
+
   return (
     <section
       className={cn("border-t border-muted-foreground/20", className)}
@@ -107,11 +114,7 @@ const Gallery7 = ({ className }: Gallery7Props) => {
             opts={{
               loop: true,
             }}
-            plugins={[
-              AutoScroll({
-                speed: 0.9,
-              }),
-            ]}
+            plugins={plugins}
             className="pointer-events-none"
           >
             <CarouselContent className="-ml-3">
