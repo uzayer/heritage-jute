@@ -64,6 +64,11 @@ export const DottedGlowBackground = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [resolvedColor, setResolvedColor] = useState<string>(color);
   const [resolvedGlowColor, setResolvedGlowColor] = useState<string>(glowColor);
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    setEnabled(window.matchMedia("(min-width: 768px)").matches);
+  }, []);
 
   // Resolve CSS variable value from the container or root
   const resolveCssVariable = (
@@ -158,7 +163,7 @@ export const DottedGlowBackground = ({
 
     let raf = 0;
     let stopped = false;
-    let isVisible = true;
+    let isVisible = false;
 
     const dpr = Math.min(Math.max(1, window.devicePixelRatio || 1), 2);
 
@@ -208,10 +213,7 @@ export const DottedGlowBackground = ({
 
     const draw = (now: number) => {
       if (stopped) return;
-      if (!isVisible) {
-        raf = requestAnimationFrame(draw);
-        return;
-      }
+      if (!isVisible) return;
       const dt = (now - last) / 1000; // seconds
       last = now;
       const { width, height } = container.getBoundingClientRect();
@@ -277,14 +279,20 @@ export const DottedGlowBackground = ({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        isVisible = entries[0]?.isIntersecting ?? true;
+        const nowVisible = entries[0]?.isIntersecting ?? false;
+        if (nowVisible && !isVisible) {
+          isVisible = true;
+          last = performance.now();
+          raf = requestAnimationFrame(draw);
+        } else {
+          isVisible = nowVisible;
+        }
       },
       { threshold: 0.1 },
     );
     observer.observe(container);
 
     window.addEventListener("resize", handleResize);
-    raf = requestAnimationFrame(draw);
 
     return () => {
       stopped = true;
@@ -304,6 +312,8 @@ export const DottedGlowBackground = ({
     speedMax,
     speedScale,
   ]);
+
+  if (!enabled) return null;
 
   return (
     <div
